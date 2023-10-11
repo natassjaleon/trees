@@ -18,15 +18,33 @@
     "payment_status":"Confirmado"
     },
     {
-    "total": "100",
+    "total": "420",
     "additional_services":null,
     "payment_method":"Tarjeta",
     "payment_status":"Pendiente"
     },
     {
-    "total": "50",
+    "total": "150",
     "additional_services":null,
     "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "2000",
+    "additional_services":"Servicio a la habitacion",
+    "payment_method":"Transferencia",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "138.98",
+    "additional_services":"Huespued extra",
+    "payment_method":"Tarjeta",
+    "payment_status":"Pendiente"
+    },
+    {
+    "total": "99.98",
+    "additional_services":null,
+    "payment_method":"Tarjeta",
     "payment_status":"Confirmado"
     }
 ]

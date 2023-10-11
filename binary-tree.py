@@ -19,25 +19,29 @@ class Codec:
         with open(path, 'w') as f:
             json.dump(archive, f, indent=3)
 
-    def serialize(self, root, path):
+    def serialize(self, root, path, t):
         """Encodes a tree to a list of dictionaries."""
         if not root:
             return []
         stack = [root]
         res = []
-        
         while stack:
             tmp = stack.pop(0)
             if not tmp:
                 res.append(None)
             else:
                 # Append a dictionary representing an employee node
-                res.append({
-                    "name": tmp.name,
-                    "position": tmp.position,
-                    "salary": tmp.salary,
-                    "hiring_date": tmp.hiring_date.strftime("%Y-%m-%d")
-                })
+                if t==0:
+                    d = {"name": tmp.name,
+                        "position": tmp.position,
+                        "salary": tmp.salary,
+                        "hiring_date": tmp.hiring_date.strftime("%Y-%m-%d")}
+                else:
+                    d={"total": tmp.total,
+                        "additional_services": tmp.additional_services,
+                        "payment_method": tmp.payment_method,
+                        "payment_status": tmp.payment_status}
+                res.append(d)
                 stack.append(tmp.left)
                 stack.append(tmp.right)
 		
@@ -161,19 +165,31 @@ class EmployeeBinaryTree:
 #LIST PRE ORDER BUT BY HIRING DATE? ASK
     def inorder(self):
         self._recursive_inorder(self.root)
+
     def _recursive_inorder(self, current):
-        cont = 0
         if current is not None:
-            if cont==6:
-                return
             self._recursive_inorder(current.left)
             print("Nombre y apellido: ",current.name)
             print("Cargo: ",current.position)
             print("Salario: ",current.salary)
             print("Fecha de contratación: ",current.hiring_date)
             print("\n")
-            cont+=1
             self._recursive_inorder(current.right)
+
+    def inorder_five(self):
+        self._inorder_five(self.root)
+        
+    def _inorder_five(self, current, count=[0]):
+        if current is not None and count[0]<5:
+            self._inorder_five(current.left, count)
+            if count[0]<5:
+                print("Nombre y apellido: ",current.name)
+                print("Cargo: ",current.position)
+                print("Salario: ",current.salary)
+                print("Fecha de contratación: ",current.hiring_date)
+                print("\n")
+                count[0]+=1
+            self._inorder_five(current.right, count)
 
     def preorder(self):
         self._recursive_preorder(self.root)
@@ -391,7 +407,8 @@ def create_invoice():
     while flag:
         additional_services = input("\nServicios adicionales: ")
         if additional_services == '':
-            invoice['additional_services']=("\nSin servicios adicionales.")
+            invoice['additional_services']=("Sin servicios adicionales")
+            flag = False
         else:
             invoice['additional_services']=additional_services.title()
             flag = False
@@ -454,11 +471,11 @@ def menu_employees(config, codec):
         if option == '1':
             print("\nCrear nuevo empleado")
             employee_tree.insert(create_employee(employee_tree))
-            codec.serialize(employee_tree.root, config['file_route_name'][hotel][0])
+            codec.serialize(employee_tree.root, config['file_route_name'][hotel][0], 0)
             print("\nEmpleado creado exitosamente.")
         elif option == '2':
             print("\nLista de empleados\n")
-            employee_tree.preorder()
+            employee_tree.inorder()
             old = input("\nIngrese el nombre completo del empleado a modificar: ")
             found = employee_tree.find_by_name(old.title())
             if found is None:
@@ -467,25 +484,27 @@ def menu_employees(config, codec):
                 print("\nLlenar datos nuevos:")
                 new = create_employee(employee_tree)
                 employee_tree.modify(found, new)
-                codec.serialize(employee_tree.root, config['file_route_name'][hotel][0])
+                codec.serialize(employee_tree.root, config['file_route_name'][hotel][0], 0)
                 print("\nEmpleado modificado exitosamente.")
         elif option == '3':
             print("\nLista de empleados\n")
-            employee_tree.preorder()
+            employee_tree.inorder()
             employee = input("\nIngrese el nombre completo del empleado a eliminar: ")
             found = employee_tree.find_by_name(employee.title())
             if found is None:
                 print("\nNo se encontró empleado bajo ese nombre.")
             else:
                 employee_tree.delete(found)
-                codec.serialize(employee_tree.root, config['file_route_name'][hotel][0])
+                codec.serialize(employee_tree.root, config['file_route_name'][hotel][0], 0)
                 print("\nEmpleado eliminado exitosamente.")
         elif option == '4':
             print("\nCinco empleados más antiguos:\n")
-            employee_tree.inorder()
+            employee_tree.inorder_five()
             print("\nAltura de árbol: ", employee_tree.height())
         elif option == '5':
             print("\nEmpleados (por fecha de contratación)\n")
+            employee_tree.inorder()
+            print("Empleados (recorrido pre-orden)\n")
             employee_tree.preorder()
             print("\nAltura de árbol: ", employee_tree.height())
         elif option == '0':
@@ -529,7 +548,7 @@ def menu_invoices(config, codec):
         elif option == '2':
             print("\nCrear nueva factura")
             invoice_tree.insert(create_invoice())
-            codec.serialize(invoice_tree.root, config['file_route_name'][hotel][1])
+            codec.serialize(invoice_tree.root, config['file_route_name'][hotel][1], 1)
             print("\nFactura creada exitosamente.")
             
         else: print("\nSelección inválida. Intente nuevamente.")
