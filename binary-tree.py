@@ -1,26 +1,25 @@
-import pickle
 import json
-import os
+import os # paths
 from datetime import datetime
-from uuid import uuid4 # para generar IDs
-# Load data, provide a menu for the user to manage employees,
-# invoices, and generate reports.
+
+# clase para serializar y deserializar con archivos JSON
 class Codec:
+    # encuentra la ruta del archivo
     def find_path(self, filename):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(script_dir, filename)
-    
+    # baja el archivo
     def load(self, path):
         with open(path, 'r') as f:
             data = json.load(f)
         return data
-    
+    # carga el archivo
     def upload(self, path, archive):
         with open(path, 'w') as f:
             json.dump(archive, f, indent=3)
-
+    
     def serialize(self, root, path, t):
-        """Encodes a tree to a list of dictionaries."""
+        # encodes un árbol a una lista de diccionarios
         if not root:
             return []
         stack = [root]
@@ -30,7 +29,8 @@ class Codec:
             if not tmp:
                 res.append(None)
             else:
-                # Append a dictionary representing an employee node
+                # anexa el diccionario que representa un nodo de empleado
+                # o un nodo de factura
                 if t==0:
                     d = {"name": tmp.name,
                         "position": tmp.position,
@@ -44,12 +44,14 @@ class Codec:
                 res.append(d)
                 stack.append(tmp.left)
                 stack.append(tmp.right)
-		
+	# busca la ruta y llama a la función upload
+	# para serializar el árbol
         self.upload(self.find_path(path), res)
         return res
 
     def deserialize(self, path, t):
         data = self.load(path)
+        # crea un árbol a partir de un diccionario
         if t == 0:
             tree = EmployeeBinaryTree()
         else:
@@ -61,7 +63,7 @@ class EmployeeNode:
         self.name = name
         self.position = position
         self.salary = salary
-        # Convert the hiring date string to a datetime object
+        # convierte la fecha de la cadena en un objeto de tipo datetime
         self.hiring_date = datetime.strptime(hiring_date, "%Y-%m-%d").date() if hiring_date else None
         self.left = None
         self.right = None
@@ -71,11 +73,11 @@ class EmployeeBinaryTree:
         self.root = None
 
     def height(self):
-        """Return the height of the tree."""
+        # retorna la altura del árbol
         return self._height(self.root)
 
     def _height(self, node):
-        """Recursive helper method to compute the height."""
+        # método recursivo para ayudar a computar la altura
         if node is None:
             return 0
         left_height = self._height(node.left)
@@ -103,16 +105,15 @@ class EmployeeBinaryTree:
                 self._insert_recursively(current.right, employee)
 
     def find_by_name(self, name):
-        """Search for an employee by name."""
+        # busca un empleado por el nombre
         return self._find_by_name(self.root, name.lower())
 
     def _find_by_name(self, current, name):
-        """Recursive helper method to search for an employee by name."""
         if current is None:
             return None
         if current.name.lower() == name:
             return current
-        # Search in the left and right subtrees
+        # busca en los subárboles izquierdo y derecho
         found = self._find_by_name(current.left, name)
         if found:
             return found
@@ -162,6 +163,7 @@ class EmployeeBinaryTree:
     def modify(self, old, new):
         self.delete(old)
         self.insert(new)
+        
 #LIST PRE ORDER BUT BY HIRING DATE? ASK
     def inorder(self):
         self._recursive_inorder(self.root)
@@ -175,13 +177,16 @@ class EmployeeBinaryTree:
             print("Fecha de contratación: ",current.hiring_date)
             print("\n")
             self._recursive_inorder(current.right)
-
+            
+    # función que imprime por orden de fecha de contratación
+    # solo los primero cinco nodos
     def inorder_five(self):
         self._inorder_five(self.root)
         
     def _inorder_five(self, current, count=[0]):
         if current is not None and count[0]<5:
             self._inorder_five(current.left, count)
+            # contador para solo imprimir los cinco primero nodos
             if count[0]<5:
                 print("Nombre y apellido: ",current.name)
                 print("Cargo: ",current.position)
@@ -234,11 +239,9 @@ class AVLTree:
         self.root = None
 
     def height(self):
-        """Return the height of the tree."""
         return self._height(self.root)
 
     def _height(self, node):
-        """Recursive helper method to compute the height."""
         if node is None:
             return 0
         left_height = self._height(node.left)
@@ -250,16 +253,16 @@ class AVLTree:
             return 0
         return node.height
 
-    # Rotate functions
+    # funciones de rotación
     def _left_rotate(self, z):
         y = z.right
         T2 = y.left
 
-        # Rotation
+        # Rotación
         y.left = z
         z.right = T2
 
-        # Update heights
+        # actualiza las alturas
         z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
         y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
 
@@ -269,11 +272,9 @@ class AVLTree:
         z = y.left
         T3 = z.right
 
-        # Rotation
         z.right = y
         y.left = T3
 
-        # Update heights
         y.height = 1 + max(self._get_height(y.left), self._get_height(y.right))
         z.height = 1 + max(self._get_height(z.left), self._get_height(z.right))
 
@@ -284,7 +285,7 @@ class AVLTree:
             return 0
         return self._get_height(node.left) - self._get_height(node.right)
 
-    # Insertion method
+    # método para insertar nodos
     def insert(self, invoice):
         if not self.root:
             self.root = InvoiceNode(invoice['total'], invoice['additional_services'],
@@ -293,39 +294,38 @@ class AVLTree:
             self.root = self._insert(self.root, invoice)
 
     def _insert(self, node, invoice):
-        # Normal BST insertion
+        # inserción BST normal
         if not node:
             return InvoiceNode(invoice['total'], invoice['additional_services'],
                                invoice['payment_method'], invoice['payment_status'])
 
-        # total uniquely identifies an invoice
         if invoice['total'] < node.total:
             node.left = self._insert(node.left, invoice)
         else:
             node.right = self._insert(node.right, invoice)
 
-        # Update height
+        # actualiza la altura
         node.height = 1 + max(self._get_height(node.left), self._get_height(node.right))
 
-        # Get balance factor
+        # obtiene el factor de balance
         balance = self._get_balance(node)
 
-        # If unbalanced, perform rotations
+        # si está desbalanceado, realiza rotaciones
 
-        # Left Left
+        # izq izq
         if balance > 1 and invoice['total'] < node.left.total:
             return self._right_rotate(node)
 
-        # Right Right
+        # derecha derecha
         if balance < -1 and invoice['total'] > node.right.total:
             return self._left_rotate(node)
 
-        # Left Right
+        # izq derecha
         if balance > 1 and invoice['total'] > node.left.total:
             node.left = self._left_rotate(node.left)
             return self._right_rotate(node)
 
-        # Right Left
+        # derecha izq
         if balance < -1 and invoice['total'] < node.right.total:
             node.right = self._right_rotate(node.right)
             return self._left_rotate(node)
@@ -345,11 +345,14 @@ class AVLTree:
                 print("Estado de pago: ",current.payment_status)
                 print("\n")
 
+# función para crear objetos de clase employee o invoice a partir de diccionarios
+# y agregarlos a cada árbol
 def create_tree(data, tree):
     while data:
         tree.insert(data.pop(0))
     return tree
 
+# función para crear nuevo empleado
 def create_employee(tree):
     flag = True
     employee = {}
@@ -391,6 +394,7 @@ def create_employee(tree):
             print("\nFormato de fecha inválido. Intente nuevamente.")
     return employee
 
+# función para crear factura
 def create_invoice():
     flag = True
     invoice = {}
@@ -429,7 +433,8 @@ def create_invoice():
             invoice['payment_status']=payment_status.title()
             flag = False
     return invoice
-	
+
+# menú para seleccionar hotel de la cadena a gestionar	
 def menu_hotels(hotel_chain_name):
     flag = True
     while flag:
@@ -451,12 +456,16 @@ def menu_hotels(hotel_chain_name):
             elif option == '3':
                 return 'Maracay'
 
-    
+# función para gestionar empleados de hotel seleccionado 
 def menu_employees(config, codec):
+    # busca el nombre de la cadena
     hotel_chain_name = config['hotel_chain_name']
+    # llama a la función para seleccionar hotel
     hotel = menu_hotels(hotel_chain_name)
     if hotel is None:
         return
+    # deserializa la data de los empleados del hotel seleccionado
+    # e un árbol binario de nodos de empleados
     employee_tree = codec.deserialize(config['file_route_name'][hotel][0], 0)
     flag = True
     while flag:
@@ -471,19 +480,25 @@ def menu_employees(config, codec):
         if option == '1':
             print("\nCrear nuevo empleado")
             employee_tree.insert(create_employee(employee_tree))
+            # serializa la nueva data con el nuevo empleado creado
             codec.serialize(employee_tree.root, config['file_route_name'][hotel][0], 0)
             print("\nEmpleado creado exitosamente.")
         elif option == '2':
             print("\nLista de empleados\n")
+            # imprime la lista de empleados ordenada por fecha de contratación
             employee_tree.inorder()
             old = input("\nIngrese el nombre completo del empleado a modificar: ")
             found = employee_tree.find_by_name(old.title())
+            # revisa si el nombre ingresado existe en los registros
             if found is None:
                 print("\nNo se encontró empleado bajo ese nombre.")
             else:
                 print("\nLlenar datos nuevos:")
                 new = create_employee(employee_tree)
+                # elimina el empleado seleccionado y agrega las modificaciones
+                # como un empleaod nuevo
                 employee_tree.modify(found, new)
+                # serializa la nueva data con los cambios realizados
                 codec.serialize(employee_tree.root, config['file_route_name'][hotel][0], 0)
                 print("\nEmpleado modificado exitosamente.")
         elif option == '3':
@@ -495,27 +510,34 @@ def menu_employees(config, codec):
                 print("\nNo se encontró empleado bajo ese nombre.")
             else:
                 employee_tree.delete(found)
+                # serializa la nueva data con el empleado eliminado
                 codec.serialize(employee_tree.root, config['file_route_name'][hotel][0], 0)
                 print("\nEmpleado eliminado exitosamente.")
         elif option == '4':
             print("\nCinco empleados más antiguos:\n")
+            # imprime por orden de fecha de contratación
+            # los cinco empleados más antiguos
             employee_tree.inorder_five()
             print("\nAltura de árbol: ", employee_tree.height())
         elif option == '5':
             print("\nEmpleados (por fecha de contratación)\n")
             employee_tree.inorder()
             print("Empleados (recorrido pre-orden)\n")
+            # hace recorrido pre orden
             employee_tree.preorder()
             print("\nAltura de árbol: ", employee_tree.height())
         elif option == '0':
             return
         else: print("\nSelección inválida. Intente nuevamente.")
-        
+
+# menú para gestionar las facturas
 def menu_invoices(config, codec):
     hotel_chain_name = config['hotel_chain_name']
     hotel = menu_hotels(hotel_chain_name)
     if hotel is None:
         return
+    # deserializa la data de las facturas del hotel seleccionado
+    # en un árbol de nodos de facturas
     invoice_tree = codec.deserialize(config['file_route_name'][hotel][1], 1)
     flag = True
     while flag:
@@ -542,18 +564,20 @@ def menu_invoices(config, codec):
                 elif op == '3':
                     method = 'Tarjeta'
                 print("\n%s's hotels %s: Facturas canceladas por %s\n" %(hotel_chain_name, hotel, method.lower()))
+                # imprime los nodos de las facturas en recorrido post orden
                 invoice_tree.postorder(method)
                 print("\nAltura de árbol: ", invoice_tree.height())
             
         elif option == '2':
             print("\nCrear nueva factura")
             invoice_tree.insert(create_invoice())
+            # serializa la nueva data con la nueva factura creada
             codec.serialize(invoice_tree.root, config['file_route_name'][hotel][1], 1)
             print("\nFactura creada exitosamente.")
             
         else: print("\nSelección inválida. Intente nuevamente.")
     
-
+# función menú principal
 def menu(config, codec):
     hotel_chain_name = config['hotel_chain_name']
     print("\nCadena de hoteles %s's Hotels" %hotel_chain_name)
@@ -571,14 +595,17 @@ def menu(config, codec):
         elif option == '2':
             menu_invoices(config, codec)
         else: print("\nSelección inválida. Intente nuevamente.")
-            
+# función principal 
 def main():
+    # objeto de tipo Codec para serializar y deserializar
     codec = Codec()
     try:
+        # carga el archivo config para acceder a las rutas
+        # y nombre de la cadena
         config = codec.load(codec.find_path('config.json'))
     except:
         print("No se encontró el archivo config.json.")
-        
+    # llama al menú principal
     menu(config, codec)
         
 main()
