@@ -1,0 +1,43 @@
+[
+    {
+    "name": "Cecilia Torres",
+    "position": "Gerente",
+    "salary": "500",
+    "hiring_date":"2022-01-15"
+    },
+    {
+    "name": "Jennifer Morales",
+    "position": "Recepcion",
+    "salary": "160",
+    "hiring_date":"2020-03-02"
+    },
+    {
+    "name": "Leonardo Eleazar",
+    "position": "Jefe de limpieza",
+    "salary": "300",
+    "hiring_date":"2020-03-03"
+    },
+    {"name": "Vanessa Pardo",
+    "position": "Chef principal",
+    "salary": "320",
+    "hiring_date":"2023-05-15"
+    },
+    {
+    "name": "Efrain Alvarado",
+    "position": "Administracion",
+    "salary": "200",
+    "hiring_date":"2022-09-12"
+    },
+    {
+    "name": "Juan Zapata",
+    "position": "Vigilancia",
+    "salary": "160",
+    "hiring_date":"2020-05-20"
+    },
+    {
+    "name": "Ricardo Ramos",
+    "position": "Limpieza",
+    "salary": "160",
+    "hiring_date":"2020-01-11"
+    }
+]

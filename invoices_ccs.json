@@ -1,0 +1,38 @@
+[
+    {
+    "total": "5320.30",
+    "additional_services": "Servicio a la habitacion",
+    "payment_method":"Tarjeta",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "4000",
+    "additional_services": "Servicio a la habitacion",
+    "payment_method":"Tarjeta",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "2500",
+    "additional_services": "Servicio a la habitacion",
+    "payment_method":"Tarjeta",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "200",
+    "additional_services":"Servicio a la habitacion",
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "500",
+    "additional_services":"Servicio a la habitacion",
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "1000",
+    "additional_services":"Servicio a la habitacion",
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    }
+]

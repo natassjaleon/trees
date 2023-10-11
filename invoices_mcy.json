@@ -1,0 +1,38 @@
+[
+    {
+    "total": "30",
+    "additional_services":null,
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "440",
+    "additional_services":null,
+    "payment_method":"Transferencia",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "90.98",
+    "additional_services":null,
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "1334",
+    "additional_services":"Desayuno extra",
+    "payment_method":"Transferencia",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "543",
+    "additional_services":null,
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    },
+    {
+    "total": "3435",
+    "additional_services":null,
+    "payment_method":"Efectivo",
+    "payment_status":"Confirmado"
+    }
+]

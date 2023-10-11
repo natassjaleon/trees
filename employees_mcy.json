@@ -1,0 +1,43 @@
+[
+    {
+    "name": "Valeria Valencia",
+    "position": "Vigilancia",
+    "salary": "150",
+    "hiring_date":"2022-01-15"
+    },
+    {
+    "name": "Fernanda Lobos",
+    "position": "Vigilancia",
+    "salary": "150",
+    "hiring_date":"2020-03-02"
+    },
+    {
+    "name": "Santiago Molino",
+    "position": "Cocina",
+    "salary": "300",
+    "hiring_date":"2020-03-03"
+    },
+    {"name": "Paula Vivenes",
+    "position": "Cocina",
+    "salary": "300",
+    "hiring_date":"2023-05-15"
+    },
+    {
+    "name": "Efrain Alvarado",
+    "position": "Recepcion",
+    "salary": "200",
+    "hiring_date":"2022-09-12"
+    },
+    {
+    "name": "Juan Guillopez",
+    "position": "Administracion",
+    "salary": "160",
+    "hiring_date":"2020-05-20"
+    },
+    {
+    "name": "Felicia Domos",
+    "position": "Limpieza",
+    "salary": "160",
+    "hiring_date":"2020-01-11"
+    }
+]
