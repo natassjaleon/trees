@@ -525,6 +525,9 @@ def menu_employees(config, codec):
             print("Empleados (recorrido pre-orden)\n")
             # hace recorrido pre orden
             employee_tree.preorder()
+            print("Empleados (recorrido post-orden)\n")
+            # hace recorrido pre orden
+            employee_tree.postorder()
             print("\nAltura de árbol: ", employee_tree.height())
         elif option == '0':
             return
