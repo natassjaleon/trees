@@ -1,0 +1,9 @@
+{
+"hotel_chain_name": "Natassja",
+"default_sort": "name",
+"default_order": 0,
+"file_route_name": {
+                    "Valencia":["./employees_vln.json", "./invoices_vln.json"],
+                    "Caracas":["./employees_ccs.json","./invoices_ccs.json"],
+                    "Maracay":["./employees_mcy.json", "./invoices_mcy.json"]}
+}
